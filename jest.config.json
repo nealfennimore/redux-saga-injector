@@ -1,0 +1,25 @@
+{
+    "collectCoverage": true,
+    "coverageDirectory": "<rootDir>/coverage",
+    "coveragePathIgnorePatterns": [
+        "/node_modules",
+        "/dist/",
+        "jest.setup.js"
+    ],
+    "coverageReporters": [
+        "json",
+        "lcov",
+        "text-summary"
+    ],
+    "roots": [
+        "<rootDir>/src"
+    ],
+    "setupFiles": [
+        "raf/polyfill",
+        "<rootDir>/jest.setup.js"
+    ],
+    "testRegex": ".*(test|spec)\\.jsx?$",
+    "testPathIgnorePatterns": [
+        "/node_modules/"
+    ]
+} 

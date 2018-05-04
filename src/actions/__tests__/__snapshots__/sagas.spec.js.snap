@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Saga actions cancelSagas 1`] = `
+Object {
+  "type": "@@redux-saga-injector/CANCEL_SAGAS",
+  "uid": "uid",
+}
+`;
+
+exports[`Saga actions queueEmpty 1`] = `
+Object {
+  "type": "@@redux-saga-injector/QUEUE_EMPTY",
+}
+`;
+
+exports[`Saga actions runSagas 1`] = `
+Object {
+  "sagas": Array [
+    [Function],
+  ],
+  "type": "@@redux-saga-injector/RUN_SAGAS",
+  "uid": "uid",
+}
+`;
+
+exports[`Saga actions sagasFinished 1`] = `
+Object {
+  "type": "@@redux-saga-injector/SAGAS_FINISHED",
+  "uid": "uid",
+}
+`;

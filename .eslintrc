@@ -1,0 +1,68 @@
+{
+    "root": true,
+    "extends": [
+        "nfen/react",
+        "plugin:import/errors",
+        "plugin:import/warnings"
+    ],
+    "settings": {
+        "import/resolver": {
+            "babel-module": {}
+        }
+    },
+    "parser": "babel-eslint",
+    "env": {
+        "jest": true
+    },
+    "globals": {
+        "shallow": false,
+        "mount": false,
+        "render": false,
+        "renderer": false,
+        "expect": false
+    },
+    "rules": {
+        "indent": [
+            "error",
+            4
+        ],
+        "import/no-unresolved": [
+            2,
+            { "commonjs": true, "amd": true }
+        ],
+        "import/extensions": [
+            0, "never"
+        ],
+        "import/no-extraneous-dependencies": [
+            0, "never"
+        ],
+        "space-before-blocks": [
+            2, "always"
+        ],
+        "space-before-function-paren": [
+            2,"never"
+        ],
+        "space-in-parens": [
+            2, "always"
+        ],
+        "space-infix-ops": 2,
+        "space-unary-ops": [
+            2,
+            {
+                "words": true,
+                "nonwords": false,
+                "overrides": {
+                    "!!": true,
+                    "!": true
+                }
+            }
+        ],
+        "no-multiple-empty-lines": [
+            "error",
+            {
+                "max": 2,
+                "maxEOF": 1
+            }
+        ]
+    }
+}

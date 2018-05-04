@@ -1,0 +1,47 @@
+{
+    "presets": [
+        ["env", {
+            "modules": false
+        }],
+        "react",
+        "stage-2"
+    ],
+    "plugins": [
+        [
+            "module-resolver",
+            {
+                "root": [
+                    "."
+                ],
+                "alias": {
+                    "dist": "./dist",
+                    "src": "./src"
+                }
+            }
+        ],
+        "syntax-dynamic-import",
+        "transform-object-rest-spread",
+        "transform-regenerator"
+    ],
+    "env": {
+        "cjs": {
+            "plugins": [
+                "transform-es2015-modules-commonjs"
+            ],
+            "ignore": [
+                "*__tests__*"
+            ]
+        },
+        "es": {
+            "ignore": [
+                "*__tests__*"
+            ]
+        },
+        "test": {
+            "plugins": [
+                "transform-es2015-modules-commonjs",
+                "dynamic-import-node"
+            ]
+        }
+    }
+}

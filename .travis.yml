@@ -1,0 +1,13 @@
+language: node_js
+node_js:
+cache: yarn
+env:
+  - NODE_ENV=test
+install:
+  - yarn
+  - npm install -g codecov
+script:
+  - npm run test
+  - codecov
+after_script:
+  - npm run bundlesize
