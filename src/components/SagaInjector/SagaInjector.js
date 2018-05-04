@@ -27,10 +27,6 @@ function SagaInjectorHOC( options, WrappedComponent ) {
             [ STORE_KEY ]: PropTypes.object
         }
 
-        state = {
-            injectedSagas: false,
-        }
-
         uid = genUID()
         sagas = sagas
 
@@ -50,18 +46,9 @@ function SagaInjectorHOC( options, WrappedComponent ) {
             return !! this.sagas.length;
         }
 
-        get hasInjectedSagas() {
-            return this.state.injectedSagas;
-        }
-
-        set hasInjectedSagas( injectedSagas ) {
-            this.setState( {injectedSagas} );
-        }
-
         injectSagas() {
-            if ( this.hasSagas && ! this.hasInjectedSagas ) {
+            if ( this.hasSagas ) {
                 this.store.dispatch( runSagas( this.sagas, this.uid ) );
-                this.hasInjectedSagas = true;
             }
         }
 

@@ -6,6 +6,8 @@ env:
 install:
   - yarn
   - npm install -g codecov
+before_script:
+  - npm run lint -- --quiet
 script:
   - npm run test
   - codecov
