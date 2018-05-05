@@ -105,8 +105,12 @@ export function* runSagas( action ) {
     }
 }
 
-export function* clientSaga() {
+
+/**
+ * Run sagas on the client
+ *
+ * @export
+ */
+export function* sagaRunner() {
     yield takeEvery( actions.RUN_SAGAS, runSagas );
 }
-
-export default clientSaga;
