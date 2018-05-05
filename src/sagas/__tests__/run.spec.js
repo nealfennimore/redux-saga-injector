@@ -167,9 +167,9 @@ describe( 'Sagas', ()=>{
         } );
     } );
 
-    describe( 'clientSaga', ()=>{
+    describe( 'sagaRunner', ()=>{
         test( 'should listen for saga runs', ()=>{
-            const gen = sagas.clientSaga();
+            const gen = sagas.sagaRunner();
             expect( gen.next().value ).toEqual( takeEvery( actions.RUN_SAGAS, sagas.runSagas ) );
             expect( gen.next().done ).toEqual( true );
         } );

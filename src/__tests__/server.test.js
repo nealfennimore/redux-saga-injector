@@ -46,7 +46,7 @@ describe( 'server integration', ()=>{
     } );
 
     test( 'should handle no sagas', async()=>{
-        const serverQueue = sagaMiddleware.run( sagas.serverQueueSaga );
+        const serverQueue = sagaMiddleware.run( sagas.preloadQueue );
         store.dispatch(
             actions.runSagas( [], 'uid' )
         );
@@ -54,7 +54,7 @@ describe( 'server integration', ()=>{
         expect( store.getState() ).toEqual( {count: 0} );
     } );
     test( 'should finish server queue', async()=>{
-        const serverQueue = sagaMiddleware.run( sagas.serverQueueSaga );
+        const serverQueue = sagaMiddleware.run( sagas.preloadQueue );
         store.dispatch(
             actions.runSagas( [
                 incrementSaga,
@@ -69,7 +69,7 @@ describe( 'server integration', ()=>{
         expect( store.getState() ).toEqual( {count: 3} );
     } );
     test( 'should finish server queue until all queues are finished', async()=>{
-        const serverQueue = sagaMiddleware.run( sagas.serverQueueSaga );
+        const serverQueue = sagaMiddleware.run( sagas.preloadQueue );
         const uids = createuids( 3 );
 
         uids.forEach( ( uid )=>{
@@ -88,7 +88,7 @@ describe( 'server integration', ()=>{
         expect( store.getState() ).toEqual( {count: 3} );
     } );
     test( 'should finish server queue until all queues are finished or cancelled', async()=>{
-        const serverQueue = sagaMiddleware.run( sagas.serverQueueSaga );
+        const serverQueue = sagaMiddleware.run( sagas.preloadQueue );
         const uids = createuids( 2 );
 
         uids.forEach( ( uid )=>{
@@ -118,7 +118,7 @@ describe( 'server integration', ()=>{
         expect( store.getState() ).toEqual( {count: 2} );
     } );
     test( 'should finish server queue when all sagas are cancelled', async()=>{
-        const serverQueue = sagaMiddleware.run( sagas.serverQueueSaga );
+        const serverQueue = sagaMiddleware.run( sagas.preloadQueue );
         const uids = createuids( 3 );
 
         uids.forEach( ( uid )=>{

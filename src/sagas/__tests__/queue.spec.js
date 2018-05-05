@@ -69,9 +69,9 @@ describe( 'Queue Sagas', ()=>{
         } );
     } );
 
-    describe( 'serverQueueSaga', ()=>{
+    describe( 'preloadQueue', ()=>{
         test( 'should run through properly', ()=>{
-            const gen = sagas.serverQueueSaga();
+            const gen = sagas.preloadQueue();
             const runTask = createMockTask();
             const emptyTask = createMockTask();
             expect( gen.next().value ).toEqual( call( sagas.createQueue ) );
@@ -88,7 +88,7 @@ describe( 'Queue Sagas', ()=>{
         } );
         test( 'should wait for queue to be empty', ()=>{
             queue = queue.add( 'test' );
-            const gen = sagas.serverQueueSaga();
+            const gen = sagas.preloadQueue();
             const runTask = createMockTask();
             const emptyTask = createMockTask();
             expect( gen.next().value ).toEqual( call( sagas.createQueue ) );

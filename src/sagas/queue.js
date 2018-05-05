@@ -70,7 +70,7 @@ export function createQueue() {
  *
  * @export
  */
-export function* serverQueueSaga() {
+export function* preloadQueue() {
     const queue = yield call( createQueue );
     const runTask = yield takeEvery( actions.RUN_SAGAS, startup, queue );
     const emptyTask = yield takeEvery( [actions.SAGAS_FINISHED, actions.CANCEL_SAGAS], waitTilEmpty, queue );
