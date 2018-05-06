@@ -72,7 +72,7 @@ async function render( req, res ){
     const preload = store.runSaga( preloadQueue );
 
     // Start initial render to start sagas
-    // This is a throw away render
+    // This is a throwaway render
      ReactDOMServer.renderToString( <Application store={store} context={context} req={req} /> } );
 
     // Finish early if context was defined
