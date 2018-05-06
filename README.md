@@ -16,7 +16,7 @@ Components using the SagaInjector, will automatically run with this saga running
 
 ```js
 import { spawn } from 'redux-saga/effects';
-import { sagaRunner } from '@fene/redux-saga-injector';
+import { sagaRunner } from '@nfen/redux-saga-injector';
 
 export default function* rootSaga() {
     yield spawn( sagaRunner );
@@ -103,13 +103,13 @@ A higher order component is availble and can be used like so. It has two benefit
 ```js
 import { SagaInjector } from '@nfen/redux-saga-injector/components';
 import MyComponent from './MyComponent';
-import * as sagas from './sagas';
+import * as saga from './sagas';
 
 const injector = SagaInjector({
     sagas: [
-        sagas.one,
-        sagas.two,
-        sagas.three
+        saga.one,
+        saga.two,
+        saga.three
     ]
 });
 
