@@ -1,5 +1,5 @@
 import { delay } from 'redux-saga';
-import { call, take, put, spawn, cancel, fork, race, takeEvery } from 'redux-saga/effects';
+import { call, take, put, spawn, fork, cancel, race, takeEvery } from 'redux-saga/effects';
 import * as actions from 'src/actions/sagas';
 import { runSagas } from 'src/sagas/run';
 
@@ -10,7 +10,7 @@ import { runSagas } from 'src/sagas/run';
  * @param {number} [options.timeout] Timeout duration
  */
 export function* timeout( options ) {
-    yield call( delay, options.timeout );
+    return yield call( delay, options.timeout );
 }
 
 /**
@@ -84,8 +84,8 @@ export function createQueue() {
 export function* startQueue( queue, options ) {
     while ( true ) {
         const { runAction } = yield race( {
-            runAction: yield take( actions.RUN_SAGAS ),
-            timedOut: yield call( timeout, options )
+            runAction: take( actions.RUN_SAGAS ),
+            timedOut: call( timeout, options ),
         } );
         if( runAction ) {
             yield fork( queueSagaRunner, queue, runAction );

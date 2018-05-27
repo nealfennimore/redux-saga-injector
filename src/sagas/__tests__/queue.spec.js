@@ -78,27 +78,18 @@ describe( 'Queue Sagas', ()=>{
     } );
 
     describe( 'startQueue', ()=>{
-        let runAction, timedOut;
+        let runAction;
         beforeEach( ()=>{
             runAction = {};
-            timedOut = Promise.resolve();
         } );
 
         test( 'should iterate through run tasks', ()=>{
             const gen = sagas.startQueue( queue, sagas.defaultOptions );
 
             expect( gen.next().value ).toEqual(
-                take( actions.RUN_SAGAS )
-            );
-
-            expect( gen.next( runAction ).value ).toEqual(
-                call( sagas.timeout, sagas.defaultOptions )
-            );
-
-            expect( gen.next( void 0 ).value ).toEqual(
                 race( {
-                    runAction,
-                    timedOut: void 0
+                    runAction: take( actions.RUN_SAGAS ),
+                    timedOut: call( sagas.timeout, sagas.defaultOptions )
                 } )
             );
 
@@ -112,17 +103,9 @@ describe( 'Queue Sagas', ()=>{
             const gen = sagas.startQueue( queue, sagas.defaultOptions );
 
             expect( gen.next().value ).toEqual(
-                take( actions.RUN_SAGAS )
-            );
-
-            expect( gen.next( void 0 ).value ).toEqual(
-                call( sagas.timeout, sagas.defaultOptions )
-            );
-
-            expect( gen.next( timedOut ).value ).toEqual(
                 race( {
-                    runAction: void 0,
-                    timedOut: timedOut
+                    runAction: take( actions.RUN_SAGAS ),
+                    timedOut: call( sagas.timeout, sagas.defaultOptions )
                 } )
             );
 
