@@ -4,6 +4,16 @@ import * as actions from 'src/actions/sagas';
 import { runSagas } from 'src/sagas/run';
 
 /**
+ * Timeout
+ * @export
+ * @param {{timeout: number}} options Options
+ * @param {number} [options.timeout] Timeout duration
+ */
+export function* timeout( options ) {
+    yield call( delay, options.timeout );
+}
+
+/**
  * Adds a uid to the queue
  *
  * @export
@@ -64,24 +74,18 @@ export function createQueue() {
 }
 
 /**
- * Timeout for 5ms
- * @export
- */
-export function* timeout() {
-    return yield delay( 5 );
-}
-
-/**
  * Starts up queue
- * Loops until no more RUN_SAGAS are received
+ * @description loops until no more RUN_SAGAS are received
  * @export
- * @param {Set} queue
+ * @param {Set} queue Queue
+ * @param {{timeout: number}} options Options
+ * @param {number} [options.timeout] Timeout duration
  */
-export function* startQueue( queue ) {
+export function* startQueue( queue, options ) {
     while ( true ) {
         const { runAction } = yield race( {
             runAction: yield take( actions.RUN_SAGAS ),
-            timedOut: yield call( timeout )
+            timedOut: yield call( timeout, options )
         } );
         if( runAction ) {
             yield fork( queueSagaRunner, queue, runAction );
@@ -92,19 +96,29 @@ export function* startQueue( queue ) {
 }
 
 /**
+ * Default options for preloadQueue
+ * @export
+ */
+export const defaultOptions = {
+    timeout: 5
+};
+
+/**
  * Saga for server side rendering
  * Creates a queue, runs sagas, and completes when queue is empty
  *
+ * @param {{timeout: number}} options Options
+ * @param {number} [options.timeout] Timeout duration
  * @export
  */
-export function* preloadQueue() {
+export function* preloadQueue( options = defaultOptions ) {
     const queue = yield call( createQueue );
 
     // Start watching for finished or cancel actions
     const emptyTask = yield takeEvery( [actions.SAGAS_FINISHED, actions.CANCEL_SAGAS], queueEmptier, queue );
 
     // Start queue and proceed after receiving all RUN_SAGAS actions
-    yield call( startQueue, queue );
+    yield call( startQueue, queue, options );
 
     // If we have still have items in the queue, then wait til all sagas finish or are cancelled
     if( queue.size ) {

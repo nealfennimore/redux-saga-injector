@@ -13,6 +13,14 @@ describe( 'Queue Utils', ()=>{
         action = { uid };
     } );
 
+    test( 'timeout', ()=>{
+        const gen = sagas.timeout( {timeout: 5} );
+        expect( gen.next().value ).toEqual(
+            call( delay, 5 )
+        );
+        expect( gen.next().done ).toEqual( true );
+    } );
+
     test( 'createQueue', ()=>{
         expect( sagas.createQueue() ).toBeInstanceOf( Set );
     } );
@@ -77,14 +85,14 @@ describe( 'Queue Sagas', ()=>{
         } );
 
         test( 'should iterate through run tasks', ()=>{
-            const gen = sagas.startQueue( queue );
+            const gen = sagas.startQueue( queue, sagas.defaultOptions );
 
             expect( gen.next().value ).toEqual(
                 take( actions.RUN_SAGAS )
             );
 
             expect( gen.next( runAction ).value ).toEqual(
-                call( sagas.timeout )
+                call( sagas.timeout, sagas.defaultOptions )
             );
 
             expect( gen.next( void 0 ).value ).toEqual(
@@ -101,14 +109,14 @@ describe( 'Queue Sagas', ()=>{
             expect( gen.next().done ).toEqual( false );
         } );
         test( 'should timeout when no run task received', ()=>{
-            const gen = sagas.startQueue( queue );
+            const gen = sagas.startQueue( queue, sagas.defaultOptions );
 
             expect( gen.next().value ).toEqual(
                 take( actions.RUN_SAGAS )
             );
 
             expect( gen.next( void 0 ).value ).toEqual(
-                call( sagas.timeout )
+                call( sagas.timeout, sagas.defaultOptions )
             );
 
             expect( gen.next( timedOut ).value ).toEqual(
@@ -135,7 +143,7 @@ describe( 'Queue Sagas', ()=>{
                 takeEvery( [actions.SAGAS_FINISHED, actions.CANCEL_SAGAS], sagas.queueEmptier, queue )
             );
             expect( gen.next( emptyTask ).value ).toEqual(
-                call( sagas.startQueue, queue )
+                call( sagas.startQueue, queue, sagas.defaultOptions )
             );
             expect( gen.next().value ).toEqual( cancel( emptyTask ) );
             expect( gen.next().done ).toEqual( true );
@@ -148,7 +156,7 @@ describe( 'Queue Sagas', ()=>{
                 takeEvery( [actions.SAGAS_FINISHED, actions.CANCEL_SAGAS], sagas.queueEmptier, queue )
             );
             expect( gen.next( emptyTask ).value ).toEqual(
-                call( sagas.startQueue, queue )
+                call( sagas.startQueue, queue, sagas.defaultOptions )
             );
 
             expect( gen.next().value ).toEqual( take( actions.QUEUE_EMPTY ) );
