@@ -31,7 +31,7 @@ function* delayedIncrementSaga() {
     yield call( incrementSaga );
 }
 
-const createuids = ( amount )=>  Array( amount ).fill( 0 ).map( ( v,k )=>`uid${k}` );
+const createUIDs = ( amount )=>  Array( amount ).fill( 0 ).map( ( v,k )=>`uid${k}` );
 
 describe( 'server integration', ()=>{
     let store, reducer, sagaMiddleware;
@@ -70,7 +70,7 @@ describe( 'server integration', ()=>{
     } );
     test( 'should finish server queue until all queues are finished', async()=>{
         const serverQueue = sagaMiddleware.run( sagas.preloadQueue );
-        const uids = createuids( 3 );
+        const uids = createUIDs( 3 );
 
         uids.forEach( ( uid )=>{
             store.dispatch(
@@ -89,7 +89,7 @@ describe( 'server integration', ()=>{
     } );
     test( 'should finish server queue until all queues are finished or cancelled', async()=>{
         const serverQueue = sagaMiddleware.run( sagas.preloadQueue );
-        const uids = createuids( 2 );
+        const uids = createUIDs( 2 );
 
         uids.forEach( ( uid )=>{
             store.dispatch(
@@ -119,7 +119,7 @@ describe( 'server integration', ()=>{
     } );
     test( 'should finish server queue when all sagas are cancelled', async()=>{
         const serverQueue = sagaMiddleware.run( sagas.preloadQueue );
-        const uids = createuids( 3 );
+        const uids = createUIDs( 3 );
 
         uids.forEach( ( uid )=>{
             store.dispatch(
