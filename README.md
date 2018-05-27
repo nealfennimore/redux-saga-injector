@@ -1,3 +1,7 @@
+
+![Travis](https://img.shields.io/travis/nealfennimore/redux-saga-injector.svg)
+[![codecov](https://codecov.io/gh/nealfennimore/redux-saga-injector/branch/master/graph/badge.svg)](https://codecov.io/gh/nealfennimore/redux-saga-injector)
+
 # Redux Saga Injector
 
 Inject sagas using sagas, in a small 3KB package. Automatically queues up and cancels sagas on both the server-side and client-side.
