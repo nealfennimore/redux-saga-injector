@@ -1,8 +1,7 @@
 import { delay } from 'redux-saga';
-import { call, take, put, spawn, cancel, takeEvery } from 'redux-saga/effects';
+import { call, take, put, spawn, cancel, fork, race, takeEvery } from 'redux-saga/effects';
 import * as actions from 'src/actions/sagas';
 import { runSagas } from 'src/sagas/run';
-
 
 /**
  * Adds a uid to the queue
@@ -27,13 +26,13 @@ export function removeFromQueue( queue, action ) {
 }
 
 /**
- * Starts up running the sagas if there are any
+ * Starts running the sagas if there are any
  *
  * @export
  * @param {Set} queue
  * @param {Object} action
  */
-export function* startup( queue, action ) {
+export function* queueSagaRunner( queue, action ) {
     if( action.sagas.length ) {
         yield call( addToQueue, queue, action );
         yield spawn( runSagas, action );
@@ -47,7 +46,7 @@ export function* startup( queue, action ) {
  * @param {Set} queue
  * @param {Object} action
  */
-export function* waitTilEmpty( queue, action ) {
+export function* queueEmptier( queue, action ) {
     yield call( removeFromQueue, queue, action );
     if( ! queue.size ) {
         yield put( actions.queueEmpty() );
@@ -65,6 +64,34 @@ export function createQueue() {
 }
 
 /**
+ * Timeout for 5ms
+ * @export
+ */
+export function* timeout() {
+    return yield delay( 5 );
+}
+
+/**
+ * Starts up queue
+ * Loops until no more RUN_SAGAS are received
+ * @export
+ * @param {Set} queue
+ */
+export function* startQueue( queue ) {
+    while ( true ) {
+        const { runAction } = yield race( {
+            runAction: yield take( actions.RUN_SAGAS ),
+            timedOut: yield call( timeout )
+        } );
+        if( runAction ) {
+            yield fork( queueSagaRunner, queue, runAction );
+        } else {
+            break; // Finish
+        }
+    }
+}
+
+/**
  * Saga for server side rendering
  * Creates a queue, runs sagas, and completes when queue is empty
  *
@@ -72,16 +99,14 @@ export function createQueue() {
  */
 export function* preloadQueue() {
     const queue = yield call( createQueue );
-    const runTask = yield takeEvery( actions.RUN_SAGAS, startup, queue );
-    const emptyTask = yield takeEvery( [actions.SAGAS_FINISHED, actions.CANCEL_SAGAS], waitTilEmpty, queue );
 
-    // Give time to receive sagas
-    yield call( delay, 0 );
+    // Start watching for finished or cancel actions
+    const emptyTask = yield takeEvery( [actions.SAGAS_FINISHED, actions.CANCEL_SAGAS], queueEmptier, queue );
 
-    // Receive no more sagas
-    yield cancel( runTask );
+    // Start queue and proceed after receiving all RUN_SAGAS actions
+    yield call( startQueue, queue );
 
-    // If we have a queue, then wait til all sagas finish or are cancelled
+    // If we have still have items in the queue, then wait til all sagas finish or are cancelled
     if( queue.size ) {
         yield take( actions.QUEUE_EMPTY );
     }
