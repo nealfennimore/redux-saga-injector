@@ -104,7 +104,7 @@ export function* _runSagas( options, action ) {
         const result = yield race( {
             sagas: call( runAll, action.sagas ),
             cancelled: call( watchCancellation, action.uid ),
-            timeout: call( timeout, options.sagaTimeout ),
+            timeout: call( timeout, options ),
         } );
         if( result.sagas ) {
             yield put( actions.sagasFinished( action.uid ) );
