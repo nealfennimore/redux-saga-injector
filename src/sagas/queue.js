@@ -1,17 +1,8 @@
-import { delay } from 'redux-saga';
 import { call, take, put, spawn, fork, cancel, race, takeEvery } from 'redux-saga/effects';
 import * as actions from 'src/actions/sagas';
 import { runSagas } from 'src/sagas/run';
-
-/**
- * Timeout
- * @export
- * @param {{timeout: number}} options Options
- * @param {number} [options.timeout] Timeout duration
- */
-export function* timeout( options ) {
-    return yield call( delay, options.timeout );
-}
+import { timeout } from 'src/sagas/utils';
+import defaultOptions from './options';
 
 /**
  * Adds a uid to the queue
@@ -78,14 +69,14 @@ export function createQueue() {
  * @description loops until no more RUN_SAGAS are received
  * @export
  * @param {Set} queue Queue
- * @param {{timeout: number}} options Options
- * @param {number} [options.timeout] Timeout duration
+ * @param {{preloadTimeout: number}} options Options
+ * @param {number} [options.preloadTimeout] Timeout duration
  */
 export function* startQueue( queue, options ) {
     while ( true ) {
         const { runAction } = yield race( {
             runAction: take( actions.RUN_SAGAS ),
-            timedOut: call( timeout, options ),
+            timedOut: call( timeout, options.preloadTimeout ),
         } );
         if( runAction ) {
             yield fork( queueSagaRunner, queue, runAction );
@@ -96,19 +87,11 @@ export function* startQueue( queue, options ) {
 }
 
 /**
- * Default options for preloadQueue
- * @export
- */
-export const defaultOptions = {
-    timeout: 5
-};
-
-/**
  * Saga for server side rendering
  * Creates a queue, runs sagas, and completes when queue is empty
  *
- * @param {{timeout: number}} options Options
- * @param {number} [options.timeout] Timeout duration
+ * @param options Options
+ * @param {number} [options.preloadTimeout] Timeout duration
  * @export
  */
 export function* preloadQueue( options = defaultOptions ) {
