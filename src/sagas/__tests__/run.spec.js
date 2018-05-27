@@ -119,7 +119,7 @@ describe( 'Sagas', ()=>{
                 race( {
                     sagas: call( sagas.runAll, sagas ),
                     cancelled: call( sagas.watchCancellation, uid ),
-                    timeout: call( sagas.timeout, defaultOptions.sagaTimeout )
+                    timeout: call( sagas.timeout, defaultOptions )
                 } )
             );
             expect( gen.next( {sagas: true} ).value ).toEqual(
@@ -133,7 +133,7 @@ describe( 'Sagas', ()=>{
                 race( {
                     sagas: call( sagas.runAll, sagas ),
                     cancelled: call( sagas.watchCancellation, uid ),
-                    timeout: call( sagas.timeout, defaultOptions.sagaTimeout )
+                    timeout: call( sagas.timeout, defaultOptions )
                 } )
             );
             expect( gen.next( {cancelled: true} ).value ).toEqual(
@@ -150,7 +150,7 @@ describe( 'Sagas', ()=>{
                 race( {
                     sagas: call( sagas.runAll, sagas ),
                     cancelled: call( sagas.watchCancellation, uid ),
-                    timeout: call( sagas.timeout, defaultOptions.sagaTimeout )
+                    timeout: call( sagas.timeout, defaultOptions )
                 } )
             );
             expect( gen.next( {timeout: true} ).value ).toEqual(
@@ -167,7 +167,7 @@ describe( 'Sagas', ()=>{
                 race( {
                     sagas: call( sagas.runAll, sagas ),
                     cancelled: call( sagas.watchCancellation, uid ),
-                    timeout: call( sagas.timeout, defaultOptions.sagaTimeout )
+                    timeout: call( sagas.timeout, defaultOptions )
                 } )
             );
             expect( gen.throw( 'error' ).value ).toEqual(
