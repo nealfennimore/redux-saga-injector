@@ -22,7 +22,7 @@
   "bundlesize": [
     {
       "path": "./dist/redux-saga-injector.js",
-      "maxSize": "3.1 Kb"
+      "maxSize": "3.4 Kb"
     }
   ],
   "repository": {

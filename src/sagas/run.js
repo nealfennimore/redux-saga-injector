@@ -1,13 +1,16 @@
-import { delay, END } from 'redux-saga';
+import { END } from 'redux-saga';
 import { call, take, all, race, put, cancel, takeEvery } from 'redux-saga/effects';
 import { TASK } from 'redux-saga/utils';
 import * as actions from 'src/actions/sagas';
+import { timeout as timeoutSaga } from 'src/sagas/utils';
 import { __BROWSER__ } from 'src/env';
+import defaultOptions from './options';
 
 /**
  * Determine if redux saga task
  *
- * @param {Object} task
+ * @param {Object} task Task object
+ * @returns Boolean
  */
 export function isTask( task ) {
     return !! ( typeof task === 'object' && task[TASK] );
@@ -30,7 +33,7 @@ export function* cancelTasks( sagas ) {
  *
  * @export
  * @param {Array} sagas Array of generator functions
- * @returns {Array}
+ * @returns Array
  */
 export function* runAll( sagas ) {
     return yield all(
@@ -42,8 +45,11 @@ export function* runAll( sagas ) {
  * Tell if an action is a valid cancel based on the uid
  *
  * @export
- * @param {String} uid
- * @param {Object} action
+ * @param {string} uid Unique ID
+ * @param action Received action
+ * @param {string} [action.type] Action type
+ * @param {Array} [action.sagas] Array of sagas
+ * @param {string} [action.uid] Unique id
  * @returns {Boolean}
  */
 export function isValidCancel( uid, action ) {
@@ -55,13 +61,12 @@ export function isValidCancel( uid, action ) {
  * Watches until sagas based on uid are cancelled
  *
  * @export
- * @param {String} uid
+ * @param {string} uid Unique ID
  */
 export function* watchCancellation( uid ) {
     while ( true ) {
         const action = yield take( actions.CANCEL_SAGAS );
-        const isCancelled = yield call( isValidCancel, uid, action );
-        if( isCancelled ) {
+        if( yield call( isValidCancel, uid, action ) ) {
             break;
         }
     }
@@ -71,13 +76,15 @@ export function* watchCancellation( uid ) {
  * Timeout function
  *
  * @export
+ * @param options Options
+ * @param {number} [options.sagaTimeout] Timeout duration
  */
-export function* timeout() {
+export function* timeout( options ) {
     // Never timeout when browser
     if ( __BROWSER__ ) {
         return yield take( '__NEVER_END__' );
     }
-    yield call( delay, 5000 );
+    yield call( timeoutSaga, options.sagaTimeout );
     yield put( END );
 }
 
@@ -85,14 +92,19 @@ export function* timeout() {
  * Run injected sagas
  *
  * @export
- * @param {Object} action
+ * @param options Options
+ * @param {number} [options.sagaTimeout] Timeout duration
+ * @param action Received action
+ * @param {string} [action.type] Action type
+ * @param {Array} [action.sagas] Array of sagas
+ * @param {string} [action.uid] Unique ID
  */
-export function* runSagas( action ) {
+export function* _runSagas( options, action ) {
     try {
         const result = yield race( {
             sagas: call( runAll, action.sagas ),
             cancelled: call( watchCancellation, action.uid ),
-            timeout: call( timeout ),
+            timeout: call( timeout, options.sagaTimeout ),
         } );
         if( result.sagas ) {
             yield put( actions.sagasFinished( action.uid ) );
@@ -105,12 +117,25 @@ export function* runSagas( action ) {
     }
 }
 
+/**
+ * Wrapper for _runSagas
+ * @description Ensures options are always the first argument
+ * @param args
+ */
+export function* runSagas( ...args ) {
+    if( args.length === 1 ) {
+        args.unshift( defaultOptions );
+    }
+    return yield call( _runSagas, ...args );
+}
 
 /**
  * Run sagas on the client
  *
  * @export
+ * @param options Options
+ * @param {number} [options.sagaTimeout] Timeout duration
  */
-export function* sagaRunner() {
-    yield takeEvery( actions.RUN_SAGAS, runSagas );
+export function* sagaRunner( options = defaultOptions ) {
+    yield takeEvery( actions.RUN_SAGAS, runSagas, options );
 }
