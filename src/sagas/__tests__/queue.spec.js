@@ -1,9 +1,10 @@
-import { delay } from 'redux-saga';
 import { call, take, put, spawn, cancel, race, fork, takeEvery } from 'redux-saga/effects';
 import { createMockTask } from 'redux-saga/utils';
 import { runSagas } from 'src/sagas/run';
 import * as actions from 'src/actions/sagas';
 import * as sagas from '../queue';
+import { timeout } from '../utils';
+import defaultOptions from '../options';
 
 describe( 'Queue Utils', ()=>{
     let queue, uid, action;
@@ -11,14 +12,6 @@ describe( 'Queue Utils', ()=>{
         queue = new Set();
         uid  = 'uid';
         action = { uid };
-    } );
-
-    test( 'timeout', ()=>{
-        const gen = sagas.timeout( {timeout: 5} );
-        expect( gen.next().value ).toEqual(
-            call( delay, 5 )
-        );
-        expect( gen.next().done ).toEqual( true );
     } );
 
     test( 'createQueue', ()=>{
@@ -84,12 +77,12 @@ describe( 'Queue Sagas', ()=>{
         } );
 
         test( 'should iterate through run tasks', ()=>{
-            const gen = sagas.startQueue( queue, sagas.defaultOptions );
+            const gen = sagas.startQueue( queue, defaultOptions );
 
             expect( gen.next().value ).toEqual(
                 race( {
                     runAction: take( actions.RUN_SAGAS ),
-                    timedOut: call( sagas.timeout, sagas.defaultOptions )
+                    timedOut: call( timeout, defaultOptions.preloadTimeout )
                 } )
             );
 
@@ -100,12 +93,12 @@ describe( 'Queue Sagas', ()=>{
             expect( gen.next().done ).toEqual( false );
         } );
         test( 'should timeout when no run task received', ()=>{
-            const gen = sagas.startQueue( queue, sagas.defaultOptions );
+            const gen = sagas.startQueue( queue, defaultOptions );
 
             expect( gen.next().value ).toEqual(
                 race( {
                     runAction: take( actions.RUN_SAGAS ),
-                    timedOut: call( sagas.timeout, sagas.defaultOptions )
+                    timedOut: call( timeout, defaultOptions.preloadTimeout )
                 } )
             );
 
@@ -126,7 +119,7 @@ describe( 'Queue Sagas', ()=>{
                 takeEvery( [actions.SAGAS_FINISHED, actions.CANCEL_SAGAS], sagas.queueEmptier, queue )
             );
             expect( gen.next( emptyTask ).value ).toEqual(
-                call( sagas.startQueue, queue, sagas.defaultOptions )
+                call( sagas.startQueue, queue, defaultOptions )
             );
             expect( gen.next().value ).toEqual( cancel( emptyTask ) );
             expect( gen.next().done ).toEqual( true );
@@ -139,7 +132,7 @@ describe( 'Queue Sagas', ()=>{
                 takeEvery( [actions.SAGAS_FINISHED, actions.CANCEL_SAGAS], sagas.queueEmptier, queue )
             );
             expect( gen.next( emptyTask ).value ).toEqual(
-                call( sagas.startQueue, queue, sagas.defaultOptions )
+                call( sagas.startQueue, queue, defaultOptions )
             );
 
             expect( gen.next().value ).toEqual( take( actions.QUEUE_EMPTY ) );

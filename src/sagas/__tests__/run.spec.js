@@ -2,6 +2,7 @@ import { call, take, all, race, put, cancel, takeEvery } from 'redux-saga/effect
 import { createMockTask } from 'redux-saga/utils';
 import * as actions from 'src/actions/sagas';
 import * as sagas from '../run';
+import defaultOptions from '../options';
 
 const sagaGenerator = ( mockFn )=>{
     return function* () {
@@ -95,13 +96,30 @@ describe( 'Sagas', ()=>{
     } );
 
     describe( 'runSagas', ()=>{
-        test( 'should call sagas', ()=>{
+        test( 'should call sagas with options provided', ()=>{
+            const gen = sagas.runSagas( defaultOptions, {sagas, uid} );
+            expect( gen.next().value ).toEqual(
+                call( sagas._runSagas, defaultOptions, {sagas, uid} )
+            );
+            expect( gen.next( {sagas: true} ).done ).toEqual( true );
+        } );
+        test( 'should call sagas without options provided', ()=>{
             const gen = sagas.runSagas( {sagas, uid} );
+            expect( gen.next().value ).toEqual(
+                call( sagas._runSagas, defaultOptions, {sagas, uid} )
+            );
+            expect( gen.next( {sagas: true} ).done ).toEqual( true );
+        } );
+    } );
+
+    describe( '_runSagas', ()=>{
+        test( 'should call sagas', ()=>{
+            const gen = sagas._runSagas( defaultOptions, {sagas, uid} );
             expect( gen.next( mockFn ).value ).toEqual(
                 race( {
                     sagas: call( sagas.runAll, sagas ),
                     cancelled: call( sagas.watchCancellation, uid ),
-                    timeout: call( sagas.timeout )
+                    timeout: call( sagas.timeout, defaultOptions.sagaTimeout )
                 } )
             );
             expect( gen.next( {sagas: true} ).value ).toEqual(
@@ -110,12 +128,12 @@ describe( 'Sagas', ()=>{
             expect( gen.next( {sagas: true} ).done ).toEqual( true );
         } );
         test( 'should be cancelled', ()=>{
-            const gen = sagas.runSagas( {sagas, uid} );
+            const gen = sagas._runSagas( defaultOptions, {sagas, uid} );
             expect( gen.next( mockFn ).value ).toEqual(
                 race( {
                     sagas: call( sagas.runAll, sagas ),
                     cancelled: call( sagas.watchCancellation, uid ),
-                    timeout: call( sagas.timeout )
+                    timeout: call( sagas.timeout, defaultOptions.sagaTimeout )
                 } )
             );
             expect( gen.next( {cancelled: true} ).value ).toEqual(
@@ -127,12 +145,12 @@ describe( 'Sagas', ()=>{
             expect( gen.next().done ).toEqual( true );
         } );
         test( 'should timeout', ()=>{
-            const gen = sagas.runSagas( {sagas, uid} );
+            const gen = sagas._runSagas( defaultOptions, {sagas, uid} );
             expect( gen.next( mockFn ).value ).toEqual(
                 race( {
                     sagas: call( sagas.runAll, sagas ),
                     cancelled: call( sagas.watchCancellation, uid ),
-                    timeout: call( sagas.timeout )
+                    timeout: call( sagas.timeout, defaultOptions.sagaTimeout )
                 } )
             );
             expect( gen.next( {timeout: true} ).value ).toEqual(
@@ -144,12 +162,12 @@ describe( 'Sagas', ()=>{
             expect( gen.next().done ).toEqual( true );
         } );
         test( 'should handle errors', ()=>{
-            const gen = sagas.runSagas( {sagas, uid} );
+            const gen = sagas._runSagas( defaultOptions, {sagas, uid} );
             expect( gen.next( mockFn ).value ).toEqual(
                 race( {
                     sagas: call( sagas.runAll, sagas ),
                     cancelled: call( sagas.watchCancellation, uid ),
-                    timeout: call( sagas.timeout )
+                    timeout: call( sagas.timeout, defaultOptions.sagaTimeout )
                 } )
             );
             expect( gen.throw( 'error' ).value ).toEqual(
@@ -170,7 +188,7 @@ describe( 'Sagas', ()=>{
     describe( 'sagaRunner', ()=>{
         test( 'should listen for saga runs', ()=>{
             const gen = sagas.sagaRunner();
-            expect( gen.next().value ).toEqual( takeEvery( actions.RUN_SAGAS, sagas.runSagas ) );
+            expect( gen.next().value ).toEqual( takeEvery( actions.RUN_SAGAS, sagas.runSagas, defaultOptions ) );
             expect( gen.next().done ).toEqual( true );
         } );
     } );

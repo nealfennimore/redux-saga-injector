@@ -117,6 +117,17 @@ export function* _runSagas( options, action ) {
     }
 }
 
+/**
+ * Wrapper for _runSagas
+ * @description Ensures options are always the first argument
+ * @param args
+ */
+export function* runSagas( ...args ) {
+    if( args.length === 1 ) {
+        args.unshift( defaultOptions );
+    }
+    return yield call( _runSagas, ...args );
+}
 
 /**
  * Run sagas on the client
