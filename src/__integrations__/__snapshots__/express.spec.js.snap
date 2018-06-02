@@ -1,0 +1,52 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Express SSR should increment correctly 1`] = `
+Array [
+  Array [
+    "
+            <!DOCTYPE html>
+            <html>
+                <head>
+                </head>
+                <body>
+                    <div id=\\"app\\"><div data-reactroot=\\"\\">3</div></div>
+                </body>
+            </html>
+        ",
+  ],
+]
+`;
+
+exports[`Express SSR should increment correctly 9 times 1`] = `
+Array [
+  Array [
+    "
+            <!DOCTYPE html>
+            <html>
+                <head>
+                </head>
+                <body>
+                    <div id=\\"app\\"><div data-reactroot=\\"\\">9</div></div>
+                </body>
+            </html>
+        ",
+  ],
+]
+`;
+
+exports[`Express SSR should increment correctly when delayed 1`] = `
+Array [
+  Array [
+    "
+            <!DOCTYPE html>
+            <html>
+                <head>
+                </head>
+                <body>
+                    <div id=\\"app\\"><div data-reactroot=\\"\\">3</div></div>
+                </body>
+            </html>
+        ",
+  ],
+]
+`;
