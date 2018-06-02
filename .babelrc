@@ -29,12 +29,16 @@
                 "transform-es2015-modules-commonjs"
             ],
             "ignore": [
-                "*__tests__*"
+                "*__tests__*",
+                "*__fixtures__*",
+                "*__integrations__*"
             ]
         },
         "es": {
             "ignore": [
-                "*__tests__*"
+                "*__tests__*",
+                "*__fixtures__*",
+                "*__integrations__*"
             ]
         },
         "test": {

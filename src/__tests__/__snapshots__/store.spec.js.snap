@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Store augmentation store close should end all running sagas 1`] = `
+Array [
+  Array [
+    Object {
+      "type": "@@redux-saga/CHANNEL_END",
+    },
+  ],
+]
+`;
