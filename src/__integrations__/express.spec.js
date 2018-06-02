@@ -1,6 +1,6 @@
 import express from 'express';
 import request from 'request';
-import createStore, {ShowCount, incrementSaga, delayedIncrementSaga} from '../__fixtures__/store';
+import createStore, {ShowCount, IncrementOnMount, incrementSaga, delayedIncrementSaga, initializeThenIncrement} from '../__fixtures__/store';
 import renderer from '../__fixtures__/renderer';
 import SagaInjector from '../components/SagaInjector';
 
@@ -85,5 +85,24 @@ describe( 'Express SSR', ()=>{
         await res.promise;
 
         expect( response.send.mock.calls ).toMatchSnapshot();
+    } );
+
+    describe( 'components that invoke actions during lifecycle', ()=>{
+        beforeEach( ()=>{
+            AppComponent = SagaInjector( {
+                sagas: [
+                    initializeThenIncrement
+                ]
+            } )( IncrementOnMount );
+        } );
+
+        test( 'should increment in time', async()=>{
+            app.get( '*', renderer( AppComponent, store, req, res ) );
+            server = app.listen( 3001, '127.0.0.1' );
+            request( 'http://localhost:3001' );
+
+            await res.promise;
+            expect( response.send.mock.calls ).toMatchSnapshot();
+        } );
     } );
 } );

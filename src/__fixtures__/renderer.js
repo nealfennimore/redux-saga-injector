@@ -3,7 +3,6 @@ import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 
 import { Provider } from 'react-redux';
-import createStore from '../__fixtures__/store';
 import { preloadQueue } from '../sagas/queue';
 
 const Application = ( {

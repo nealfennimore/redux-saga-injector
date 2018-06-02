@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import createSagaMiddleware, { delay } from 'redux-saga';
-import { put, call } from 'redux-saga/effects';
+import { put, call, take } from 'redux-saga/effects';
 import { applyMiddleware, createStore, compose } from 'redux';
 import { connect } from 'react-redux';
 import augment from '../store';
@@ -10,6 +10,8 @@ import augment from '../store';
 //
 // ─── REDUCER ────────────────────────────────────────────────────────────────────
 //
+
+const INITIALIZE = 'INITIALIZE';
 
 const INCREMENT = 'INCREMENT';
 export const increment = ()=> ( {
@@ -36,6 +38,10 @@ export const createReducer = ()=>{
 const enhance = connect(
     state => ( {
         count: state.count
+    } ),
+    dispatch => ( {
+        increment: ()=> dispatch( increment() ),
+        initialize: ()=> dispatch( { type: INITIALIZE} )
     } )
 );
 
@@ -53,6 +59,25 @@ _ShowCount.propTypes = {
 
 export const ShowCount = enhance( _ShowCount );
 
+class _IncrementOnMount extends Component {
+    static propTypes = {
+        initialize: PropTypes.func.isRequired,
+        count: PropTypes.number.isRequired
+    }
+
+    componentWillMount() {
+        this.props.initialize();
+    }
+
+    render() {
+        return (
+            <div>{this.props.count}</div>
+        );
+    }
+}
+
+export const IncrementOnMount = enhance( _IncrementOnMount );
+
 //
 // ─── SAGAS ──────────────────────────────────────────────────────────────────────
 //
@@ -63,6 +88,11 @@ export function* incrementSaga() {
 
 export function* delayedIncrementSaga( timeout = 3000 ) {
     yield call( delay, timeout );
+    yield call( incrementSaga );
+}
+
+export function* initializeThenIncrement() {
+    yield take( INITIALIZE );
     yield call( incrementSaga );
 }
 

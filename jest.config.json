@@ -4,6 +4,7 @@
     "coveragePathIgnorePatterns": [
         "/node_modules",
         "/dist/",
+        "__fixtures__",
         "jest.setup.js"
     ],
     "coverageReporters": [
