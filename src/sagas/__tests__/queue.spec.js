@@ -1,9 +1,9 @@
-import { call, take, put, spawn, cancel, race, fork, takeEvery } from 'redux-saga/effects';
+import { call, take, put, spawn, cancel, takeEvery } from 'redux-saga/effects';
 import { createMockTask } from 'redux-saga/utils';
+import { delay } from 'redux-saga';
 import { runSagas } from 'src/sagas/run';
 import * as actions from 'src/actions/sagas';
 import * as sagas from '../queue';
-import { timeout } from '../utils';
 import defaultOptions from '../options';
 
 describe( 'Queue Utils', ()=>{
@@ -70,45 +70,10 @@ describe( 'Queue Sagas', ()=>{
         } );
     } );
 
-    describe( 'startQueue', ()=>{
-        let runAction;
-        beforeEach( ()=>{
-            runAction = {};
-        } );
-
-        test( 'should iterate through run tasks', ()=>{
-            const gen = sagas.startQueue( queue, defaultOptions );
-
-            expect( gen.next().value ).toEqual(
-                race( {
-                    runAction: take( actions.RUN_SAGAS ),
-                    timedOut: call( timeout, defaultOptions.preloadTimeout )
-                } )
-            );
-
-            expect( gen.next( { runAction } ).value ).toEqual(
-                fork( sagas.queueSagaRunner, queue, runAction )
-            );
-
-            expect( gen.next().done ).toEqual( false );
-        } );
-        test( 'should timeout when no run task received', ()=>{
-            const gen = sagas.startQueue( queue, defaultOptions );
-
-            expect( gen.next().value ).toEqual(
-                race( {
-                    runAction: take( actions.RUN_SAGAS ),
-                    timedOut: call( timeout, defaultOptions.preloadTimeout )
-                } )
-            );
-
-            expect( gen.next( {runAction: void 0} ).done ).toEqual( true );
-        } );
-    } );
-
     describe( 'preloadQueue', ()=>{
-        let emptyTask;
+        let runTask, emptyTask;
         beforeEach( ()=>{
+            runTask = createMockTask();
             emptyTask = createMockTask();
         } );
 
@@ -116,11 +81,14 @@ describe( 'Queue Sagas', ()=>{
             const gen = sagas.preloadQueue();
             expect( gen.next().value ).toEqual( call( sagas.createQueue ) );
             expect( gen.next( queue ).value ).toEqual(
-                takeEvery( [actions.SAGAS_FINISHED, actions.CANCEL_SAGAS], sagas.queueEmptier, queue )
+                takeEvery( actions.RUN_SAGAS, sagas.queueSagaRunner, queue )
             );
-            expect( gen.next( emptyTask ).value ).toEqual(
-                call( sagas.startQueue, queue, defaultOptions )
+            expect( gen.next( runTask ).value ).toEqual(
+                takeEvery( [actions.SAGAS_FINISHED, actions.CANCEL_SAGAS], sagas.queueEmptier, queue
+                )
             );
+            expect( gen.next( emptyTask ).value ).toEqual( call( delay, defaultOptions.preloadTimeout ) );
+            expect( gen.next().value ).toEqual( cancel( runTask ) );
             expect( gen.next().value ).toEqual( cancel( emptyTask ) );
             expect( gen.next().done ).toEqual( true );
         } );
@@ -129,12 +97,13 @@ describe( 'Queue Sagas', ()=>{
             const gen = sagas.preloadQueue();
             expect( gen.next().value ).toEqual( call( sagas.createQueue ) );
             expect( gen.next( queue ).value ).toEqual(
+                takeEvery( actions.RUN_SAGAS, sagas.queueSagaRunner, queue )
+            );
+            expect( gen.next( runTask ).value ).toEqual(
                 takeEvery( [actions.SAGAS_FINISHED, actions.CANCEL_SAGAS], sagas.queueEmptier, queue )
             );
-            expect( gen.next( emptyTask ).value ).toEqual(
-                call( sagas.startQueue, queue, defaultOptions )
-            );
-
+            expect( gen.next( emptyTask ).value ).toEqual( call( delay, defaultOptions.preloadTimeout ) );
+            expect( gen.next().value ).toEqual( cancel( runTask ) );
             expect( gen.next().value ).toEqual( take( actions.QUEUE_EMPTY ) );
             expect( gen.next().value ).toEqual( cancel( emptyTask ) );
             expect( gen.next().done ).toEqual( true );
