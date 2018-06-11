@@ -31,3 +31,10 @@ export function queueEmpty() {
         type: QUEUE_EMPTY,
     };
 }
+
+export const QUEUE_TIMEOUT = `${PREFIX}/QUEUE_TIMEOUT`;
+export function queueTimeout() {
+    return {
+        type: QUEUE_TIMEOUT,
+    };
+}

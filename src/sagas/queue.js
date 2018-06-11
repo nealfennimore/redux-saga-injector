@@ -81,6 +81,7 @@ export function* startQueue( queue, options ) {
         if( runAction ) {
             yield fork( queueSagaRunner, queue, runAction );
         } else {
+            yield put( actions.queueTimeout() );
             break; // Finish
         }
     }
@@ -97,18 +98,22 @@ export function* startQueue( queue, options ) {
 export function* preloadQueue( options = defaultOptions ) {
     const queue = yield call( createQueue );
 
+    // Start queue and proceed after receiving all RUN_SAGAS actions
+    const runTask = yield fork( startQueue, queue, options );
+
     // Start watching for finished or cancel actions
     const emptyTask = yield takeEvery( [actions.SAGAS_FINISHED, actions.CANCEL_SAGAS], queueEmptier, queue );
 
-    // Start queue and proceed after receiving all RUN_SAGAS actions
-    yield call( startQueue, queue, options );
+    // Listen til queue timesout or is empty
+    yield take( [ actions.QUEUE_TIMEOUT, actions.QUEUE_EMPTY ] );
 
-    // If we have still have items in the queue, then wait til all sagas finish or are cancelled
-    if( queue.size ) {
+    // If we have still have items in the queue, then wait til all sagas finish or cancel
+    if ( queue.size ) {
         yield take( actions.QUEUE_EMPTY );
     }
 
-    // Clean up remaining task
+    // Clean up remaining tasks
+    yield cancel( runTask );
     yield cancel( emptyTask );
 
     // Done
