@@ -122,7 +122,7 @@ export default injector( MyComponent );
 
 ### Use HOC with react-redux-injector
 
-By utilizing our [sister package](https://github.com/nealfennimore/redux-reducer-injector), you can dynamic inject reducers and sagas on the fly.
+By utilizing our [sister package](https://github.com/nealfennimore/redux-reducer-injector), you can dynamically inject reducers and sagas on the fly.
 
 ```js
 import { compose } from 'redux';
