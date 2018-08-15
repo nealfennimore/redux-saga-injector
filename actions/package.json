@@ -1,0 +1,7 @@
+{
+    "name": "redux-saga-injector/actions",
+    "private": true,
+    "main": "../lib/actions/index.js",
+    "module": "../es/actions/index.js",
+    "jsnext:main": "../es/actions/index.js"
+}
