@@ -1,6 +1,6 @@
 {
   "name": "@nfen/redux-saga-injector",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Redux Saga utils for easier use of sagas on the server and dynamic components",
   "main": "lib/index.js",
   "module": "es/index.js",
