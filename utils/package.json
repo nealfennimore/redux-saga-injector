@@ -1,0 +1,7 @@
+{
+    "name": "redux-saga-injector/utils",
+    "private": true,
+    "main": "../lib/utils/index.js",
+    "module": "../es/utils/index.js",
+    "jsnext:main": "../es/utils/index.js"
+}

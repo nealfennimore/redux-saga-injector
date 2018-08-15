@@ -6,6 +6,10 @@
 
 Inject sagas using sagas, in a small 3KB package. Automatically queues up and cancels sagas on both the server-side and client-side.
 
+This package is intended to solve issues where sagas need to be injected dynamically, and then cancelled when they're no longer needed i.e. when a user goes to another page in a SPA. It prevents side effects from occuring when sagas use similar actions or logic.
+
+Good for composing components with their needed business logic, such as in the case of using [react loadable](https://github.com/jamiebuilds/react-loadable) or [react universal component](https://github.com/faceyspacey/react-universal-component), or only running business logic on a single page.
+
 ## Installation
 
 ```sh
@@ -25,6 +29,28 @@ import { sagaRunner } from '@nfen/redux-saga-injector';
 export default function* rootSaga() {
     yield spawn( sagaRunner );
 }
+```
+
+### Manual Saga Injection
+
+You can have more granular control over the injection and cancellation of sagas by dispatching actions.
+
+The sagas to be injected need some sort of differentiator, so that they can be properly cancelled if needed.
+
+```js
+import { runSagas, cancelSagas } from '@nfen/redux-saga-injector/actions';
+import { genUID } from '@nfen/redux-saga-injector/utils';
+import * as sagas from './sagas';
+import store from './store';
+
+const sagasToInject = [ sagas.one, sagas.two, sagas.three ];
+const sagasId = genUID();
+
+store.dispatch( runSagas(sagasToInject, sagasId) );
+
+// Do some stuff...
+
+store.dispatch( cancelSagas(sagasId) );
 ```
 
 ## Server Side Rendering
@@ -139,7 +165,3 @@ const injector = (options) => compose(
 
 export default injector( MyComponent );
 ```
-
-
-## TODO
-- Branch out queueing system for easier use with those not using react for injecting sagas
