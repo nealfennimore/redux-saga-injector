@@ -29,7 +29,12 @@
     "type": "git",
     "url": "https://github.com/nealfennimore/redux-saga-injector.git"
   },
-  "keywords": [],
+  "keywords": [
+    "redux",
+    "redux saga",
+    "redux injection",
+    "sagas"
+  ],
   "author": "Neal Fennimore",
   "license": "Fair Source License, version 0.9",
   "dependencies": {},
