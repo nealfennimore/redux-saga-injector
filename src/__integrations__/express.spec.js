@@ -36,7 +36,7 @@ describe( 'Express SSR', ()=>{
         app = express();
     } );
     afterEach( ()=>{
-        server.close();
+        server && server.close();
     } );
 
     test( 'should increment correctly', async()=>{
@@ -94,6 +94,9 @@ describe( 'Express SSR', ()=>{
                     initializeThenIncrement
                 ]
             } )( IncrementOnMount );
+        } );
+        afterEach( ()=>{
+            server && server.close();
         } );
 
         test( 'should increment in time', async()=>{
