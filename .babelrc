@@ -44,7 +44,7 @@
         "test": {
             "plugins": [
                 "@babel/plugin-transform-modules-commonjs",
-                "@babel/dynamic-import-node"
+                "dynamic-import-node"
             ]
         }
     }
