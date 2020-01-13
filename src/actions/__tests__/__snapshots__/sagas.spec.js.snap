@@ -16,7 +16,7 @@ Object {
 exports[`Saga actions runSagas 1`] = `
 Object {
   "sagas": Array [
-    [Function],
+    [MockFunction],
   ],
   "type": "@@redux-saga-injector/RUN_SAGAS",
   "uid": "uid",

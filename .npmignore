@@ -11,3 +11,4 @@ webpack
 *.log
 jest*
 yarn.lock
+package-lock.json
