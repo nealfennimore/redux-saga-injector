@@ -5,9 +5,9 @@ Array [
   Array [
     Object {
       "sagas": Array [
-        [Function],
-        [Function],
-        [Function],
+        [MockFunction],
+        [MockFunction],
+        [MockFunction],
       ],
       "type": "@@redux-saga-injector/RUN_SAGAS",
       "uid": "uid",
@@ -21,9 +21,9 @@ Array [
   Array [
     Object {
       "sagas": Array [
-        [Function],
-        [Function],
-        [Function],
+        [MockFunction],
+        [MockFunction],
+        [MockFunction],
       ],
       "type": "@@redux-saga-injector/RUN_SAGAS",
       "uid": "uid",
