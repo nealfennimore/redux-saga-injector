@@ -1,6 +1,5 @@
 /* eslint-disable import/prefer-default-export */
-import { delay } from 'redux-saga';
-import { call } from 'redux-saga/effects';
+import { call, delay } from 'redux-saga/effects';
 
 /**
  * Timeout
