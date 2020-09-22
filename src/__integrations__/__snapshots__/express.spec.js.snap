@@ -26,7 +26,7 @@ Array [
                 <head>
                 </head>
                 <body>
-                    <div id=\\"app\\"><div data-reactroot=\\"\\">3</div></div>
+                    <div id=\\"app\\"><div data-reactroot=\\"\\">6</div></div>
                 </body>
             </html>
         ",
@@ -43,7 +43,7 @@ Array [
                 <head>
                 </head>
                 <body>
-                    <div id=\\"app\\"><div data-reactroot=\\"\\">9</div></div>
+                    <div id=\\"app\\"><div data-reactroot=\\"\\">18</div></div>
                 </body>
             </html>
         ",
@@ -60,7 +60,7 @@ Array [
                 <head>
                 </head>
                 <body>
-                    <div id=\\"app\\"><div data-reactroot=\\"\\">3</div></div>
+                    <div id=\\"app\\"><div data-reactroot=\\"\\">0</div></div>
                 </body>
             </html>
         ",

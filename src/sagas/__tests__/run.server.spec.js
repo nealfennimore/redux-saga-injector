@@ -9,9 +9,9 @@ jest.mock( 'src/env', ()=>( {
 
 describe( 'timeout', ()=>{
     test( 'should timeout on server', ()=>{
-        const gen = sagas.timeout( {sagaTimeout: 5000} );
+        const gen = sagas.timeout( {sagaTimeout: 5000}, 1 );
         expect( gen.next().value ).toEqual( call( timeout, 5000 ) );
-        expect( gen.next().value ).toEqual( put( END ) );
+        expect( gen.next().value ).toEqual( true );
         expect( gen.next().done ).toEqual( true );
     } );
 } );

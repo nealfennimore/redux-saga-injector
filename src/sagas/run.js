@@ -84,7 +84,7 @@ export function* timeout( options ) {
         return yield take( '__NEVER_END__' );
     }
     yield call( timeoutSaga, options.sagaTimeout );
-    yield put( END );
+    return true;
 }
 
 /**
