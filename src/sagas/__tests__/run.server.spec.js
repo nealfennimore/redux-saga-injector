@@ -1,5 +1,4 @@
-import { END } from 'redux-saga';
-import { call, put } from 'redux-saga/effects';
+import { call } from 'redux-saga/effects';
 import * as sagas from '../run';
 import { timeout } from '../utils';
 

@@ -1,6 +1,6 @@
 import { createStore, applyMiddleware, compose } from 'redux';
-import createSagaMiddleware, { delay } from 'redux-saga';
-import { put, call } from 'redux-saga/effects';
+import createSagaMiddleware from 'redux-saga';
+import { put, call, delay } from 'redux-saga/effects';
 import * as actions from 'src/actions/sagas';
 import * as sagas from '../sagas/queue';
 
@@ -27,7 +27,7 @@ function* incrementSaga() {
 }
 
 function* delayedIncrementSaga() {
-    yield call( delay, 6000 );
+    yield delay( 6000 );
     yield call( incrementSaga );
 }
 

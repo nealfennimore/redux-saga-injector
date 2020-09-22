@@ -1,5 +1,5 @@
 /* eslint-disable import/prefer-default-export */
-import { call, delay } from 'redux-saga/effects';
+import { delay } from 'redux-saga/effects';
 
 /**
  * Timeout
@@ -7,5 +7,5 @@ import { call, delay } from 'redux-saga/effects';
  * @param {number} duration Duration of timeout
  */
 export function* timeout( duration ) {
-    return yield call( delay, duration );
+    return yield delay( duration );
 }

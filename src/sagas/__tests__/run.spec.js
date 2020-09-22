@@ -1,5 +1,5 @@
 import { call, take, all, race, put, cancel, takeEvery } from 'redux-saga/effects';
-import { createMockTask } from 'redux-saga/utils';
+import { createMockTask } from '@redux-saga/testing-utils';
 import * as actions from 'src/actions/sagas';
 import * as sagas from '../run';
 import defaultOptions from '../options';
@@ -54,7 +54,7 @@ describe( 'Sagas', ()=>{
             const gen = sagas.cancelTasks( tasks );
 
             expect( gen.next().value ).toEqual(
-                cancel( ...tasks )
+                cancel( [...tasks] )
             );
         } );
         test( 'should only cancel tasks', ()=>{
@@ -67,7 +67,7 @@ describe( 'Sagas', ()=>{
             const gen = sagas.cancelTasks( tasks );
 
             expect( gen.next().value ).toEqual(
-                cancel( ...tasks.slice( 1 ) )
+                cancel( [...tasks.slice( 1 )] )
             );
         } );
     } );

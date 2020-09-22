@@ -1,6 +1,5 @@
-import { END } from 'redux-saga';
+import { TASK } from '@redux-saga/symbols';
 import { call, take, all, race, put, cancel, takeEvery } from 'redux-saga/effects';
-import { TASK } from 'redux-saga/utils';
 import * as actions from 'src/actions/sagas';
 import { timeout as timeoutSaga } from 'src/sagas/utils';
 import { __BROWSER__ } from 'src/env';
@@ -25,7 +24,7 @@ export function isTask( task ) {
  */
 export function* cancelTasks( sagas ) {
     const tasks = sagas.filter( isTask );
-    yield cancel( ...tasks );
+    yield cancel( [...tasks] );
 }
 
 /**

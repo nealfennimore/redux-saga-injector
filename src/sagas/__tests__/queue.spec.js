@@ -1,5 +1,5 @@
 import { call, take, put, spawn, cancel, race, fork, takeEvery } from 'redux-saga/effects';
-import { createMockTask } from 'redux-saga/utils';
+import { createMockTask } from '@redux-saga/testing-utils';
 import { runSagas } from 'src/sagas/run';
 import * as actions from 'src/actions/sagas';
 import * as sagas from '../queue';

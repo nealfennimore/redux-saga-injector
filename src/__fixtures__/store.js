@@ -87,7 +87,7 @@ export function* incrementSaga() {
 }
 
 export function* delayedIncrementSaga( timeout = 3000 ) {
-    yield call( delay, timeout );
+    yield delay( timeout );
     yield call( incrementSaga );
 }
 
