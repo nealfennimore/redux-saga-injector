@@ -18,7 +18,15 @@ function SagaInjectorHOC( options, WrappedComponent ) {
 	WrappedComponent.name ||
     'Component';
 
-    class SagaInjector extends Component {
+    return class SagaInjector extends Component {
+        constructor( ...args ) {
+            super( ...args );
+            this.uid = genUID();
+            this.sagas = sagas;
+
+            this.injectSagas();
+        }
+
         static displayName = `SagaInjector(${ componentName })`
         static propTypes = {
             [ STORE_KEY ]: PropTypes.object // eslint-disable-line
@@ -27,29 +35,22 @@ function SagaInjectorHOC( options, WrappedComponent ) {
             [ STORE_KEY ]: PropTypes.object
         }
 
-        uid = genUID()
-        sagas = sagas
-
-        componentWillMount() {
-            this.injectSagas();
-        }
-
         componentWillUnmount() {
-            this.store.dispatch( cancelSagas( this.uid ) );
+            this.cancelSagas();
         }
 
         get store() {
             return this.props[STORE_KEY] || this.context[STORE_KEY];
         }
 
-        get hasSagas() {
-            return !! this.sagas.length;
-        }
-
         injectSagas() {
-            if ( this.hasSagas ) {
+            if ( this.sagas.length ) {
                 this.store.dispatch( runSagas( this.sagas, this.uid ) );
             }
+        }
+
+        cancelSagas() {
+            this.store.dispatch( cancelSagas( this.uid ) );
         }
 
         render() {
@@ -57,9 +58,7 @@ function SagaInjectorHOC( options, WrappedComponent ) {
                 <WrappedComponent {...this.props} />
             );
         }
-    }
-
-    return SagaInjector;
+    };
 }
 
 export default curry( SagaInjectorHOC );

@@ -43,7 +43,6 @@ describe( 'SagaInjector', ()=>{
 
             expect( component.instance().store ).toEqual( store );
             expect( component.instance().sagas ).toEqual( sagas );
-            expect( component.instance().hasSagas ).toEqual( true );
             expect( store.dispatch.mock.calls ).toMatchSnapshot();
         } );
         test( 'should not inject when no sagas', ()=>{
@@ -54,7 +53,6 @@ describe( 'SagaInjector', ()=>{
 
             expect( component.instance().store ).toEqual( store );
             expect( component.instance().sagas ).toEqual( [] );
-            expect( component.instance().hasSagas ).toEqual( false );
             expect( store.dispatch ).not.toBeCalled();
         } );
         test( 'should unmount properly', ()=>{
