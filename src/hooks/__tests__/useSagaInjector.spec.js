@@ -1,7 +1,4 @@
-import React, {
-    Component
-} from 'react';
-import { useDispatch } from 'react-redux';
+import React from 'react';
 import renderer from 'react-test-renderer';
 import useSagaInjector from '../useSagaInjector';
 
