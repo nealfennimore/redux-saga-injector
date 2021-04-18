@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`useSagaInjector lifecycle should inject sagas on mount 1`] = `
+Array [
+  Array [
+    Object {
+      "sagas": Array [
+        [MockFunction],
+        [MockFunction],
+        [MockFunction],
+      ],
+      "type": "@@redux-saga-injector/RUN_SAGAS",
+      "uid": "uid",
+    },
+  ],
+]
+`;
+
+exports[`useSagaInjector lifecycle should unmount properly 1`] = `
+Array [
+  Array [
+    Object {
+      "sagas": Array [
+        [MockFunction],
+        [MockFunction],
+        [MockFunction],
+      ],
+      "type": "@@redux-saga-injector/RUN_SAGAS",
+      "uid": "uid",
+    },
+  ],
+]
+`;
+
+exports[`useSagaInjector should match snapshot 1`] = `
+<div>
+  1
+</div>
+`;
