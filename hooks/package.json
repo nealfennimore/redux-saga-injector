@@ -1,0 +1,7 @@
+{
+    "name": "redux-saga-injector/hooks",
+    "private": true,
+    "main": "../lib/hooks/index.js",
+    "module": "../es/hooks/index.js",
+    "jsnext:main": "../es/hooks/index.js"
+}
